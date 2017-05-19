@@ -10,7 +10,7 @@ from sobamchan.sobamchan_vocabulary import Vocabulary
 
 class CNN(Model):
 
-    def __init__(self, class_n, d, vocab, fpath):
+    def __init__(self, class_n, vocab_n, d, vocab, fpath):
         embed_learn=PreTrainedEmbedId(len(vocab),d,vocab,fpath,False)
         super(CNN, self).__init__(
             embed_learn=embed_learn,
