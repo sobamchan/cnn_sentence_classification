@@ -1,0 +1,7 @@
+__pycache__
+*.json
+!.gitkeep
+*.png
+ag_news_csv.tar.gz
+ag_news_csv
+*.pdf
