@@ -17,6 +17,7 @@ class CNN(Model):
             conv_f3=L.Convolution2D(2, 100, (3, d)),
             conv_f4=L.Convolution2D(2, 100, (4, d)),
             conv_f5=L.Convolution2D(2, 100, (5, d)),
+            fc=L.Linear(None, class_n),
         )
         self.embedW = embed_learn.W
         self.embed_static = F.embed_id
@@ -35,9 +36,9 @@ class CNN(Model):
         embed_concat = F.concat((embed_h1, embed_h2))
 
         # conv
-        h_f3 = self.conv_f3(embed_concat)
-        h_f4 = self.conv_f4(embed_concat)
-        h_f5 = self.conv_f5(embed_concat)
+        h_f3 = F.relu(self.conv_f3(embed_concat))
+        h_f4 = F.relu(self.conv_f4(embed_concat))
+        h_f5 = F.relu(self.conv_f5(embed_concat))
         # pool
         _, _, h_f3_h, h_f3_w = h_f3.shape
         _, _, h_f4_h, h_f4_w = h_f4.shape
@@ -48,6 +49,7 @@ class CNN(Model):
         batch, _, _, _ = pooled_f3.shape
         pooled_concat = F.concat((pooled_f3,pooled_f4,pooled_f5),3)
         h = F.reshape(pooled_concat, (batch, -1))
+        h = F.dropout(self.fc(h), train=train)
         return h
 
 
@@ -58,7 +60,7 @@ def test():
     words = ['dog', 'cat', 'cow', 'sheep', 'sobamchan']
     for word in words:
         vocab.new(word)
-    cnn = CNN(2, 300, vocab, fpath)
+    cnn = CNN(2, len(vocab), 300, vocab, fpath)
 
     x = Variable(np.array([[1,2,2,2,3,2,1,2,3,2,1,2,3,2,], [2,3,3,4,1,2,3,4,2,2,3,1,2,3]]).astype(np.int32))
     t = Variable(np.array([0, 1]).astype(np.int32))
